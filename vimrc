@@ -59,7 +59,8 @@ syntax on
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Unfold code when on open
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set foldmethod=syntax
+" set foldmethod=syntax slows ALE so avoid it
+set foldmethod=indent
 augroup OpenAllFoldsOnFileOpen
     autocmd!
     autocmd BufRead * normal zR
@@ -69,7 +70,7 @@ augroup END
 " ALEes :help ale-lint-file-linters
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_fixers = {
-\   'javascript': ['prettier'],
+\   'javascript': ['eslint'],
 \   'python': ['autopep8', 'yapf']
 \}
 let g:ale_linters = {
