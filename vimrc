@@ -317,3 +317,13 @@ nnoremap \ :Ag<SPACE>
 nnoremap <C-f> :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Profiling
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" :profile start profile.log
+" :profile func *
+" :profile file *
+" " At this point do slow actions
+" :profile pause
+" :noautocmd qall!
