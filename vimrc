@@ -5,7 +5,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+" call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
@@ -47,7 +47,9 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'prettier/vim-prettier'
 Plugin 'hhatto/autopep8'
 Plugin 'google/yapf'
+Plugin 'ambv/black'
 Plugin 'mileszs/ack.vim'
+Plugin 'leafgarland/typescript-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -69,14 +71,12 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ALEes :help ale-lint-file-linters
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\   'python': ['autopep8', 'yapf']
-\}
+let g:ale_fixers = { 'javascript': ['eslint'], 'python': ['black', 'isort', 'autopep8', 'prettier'] }
 let g:ale_linters = {
 \   'javascript': ['eslint'],
-\   'python': ['pylint', 'flake8', 'yapf'],
-\   'scala': ['scalac']
+\   'python': ['pylint', 'autopep8', 'flake8', 'black'],
+\   'scala': ['scalac'],
+\   'java': ['javalsp']
 \}
 let g:ale_javascript_prettier_options = '--single-quote'
 let g:ale_completion_enabled = 0
@@ -130,8 +130,8 @@ set splitbelow
 set splitright
 
 set encoding=utf-8
-set wildignore=*.swp,*.bak,*.pyc,*.class,*.DS_Store
-let NERDTreeIgnore = ['\.pyc$', '\.swp$', '*\.DS_Store', '\.DS_Store$', '\.DS_Store']
+set wildignore=*.swp,*.bak,*.pyc,*.class,*.DS_Store,*.swo
+let NERDTreeIgnore = ['\.pyc$', '\.swp$', '*\.DS_Store', '\.DS_Store$', '\.DS_Store', '\.swo$', '__pycache__']
 
 "set background=dark
 set background=light
@@ -279,8 +279,11 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.swo,*.swm,*.swn
 
-let g:ycm_path_to_python_interpreter="/usr/local/bin/python3"
+" let g:ycm_path_to_python_interpreter="/usr/local/bin/python3"
 let g:ycm_autoclose_preview_window_after_completion=1
+let g:ycm_python_binary_path=substitute(system("which python"), "\n$", "", "")
+let $PYTHONPATH=getcwd() . ":" . $PYTHONPATH
+
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 set ts=2 sw=2 et
 let g:indent_guides_start_level = 2
