@@ -24,6 +24,7 @@ for file in $filestosave; do
     cp ~/.$file $dir/$file
 done
 
+echo "Saving git hooks"
 cp -a $githooks $dir/git-templates/hooks
 
 cd $dir
