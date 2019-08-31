@@ -7,7 +7,7 @@
 ########## Variables
 
 dir=~/dotfiles
-githooksdir=~/.git-templates/hooks
+githooks=~/.git-templates/hooks
 filestosave="bashrc vimrc zshrc oh-my-zsh gitignore gitconfig"
 
 ##########
@@ -24,7 +24,7 @@ for file in $filestosave; do
     cp ~/.$file $dir/$file
 done
 
-cp -a ~/.git-templates/hooks dir/git-hooks
+cp -a $githooks $dir/git-hooks
 
 cd $dir
 git add .
