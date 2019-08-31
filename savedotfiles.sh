@@ -24,7 +24,7 @@ for file in $filestosave; do
     cp ~/.$file $dir/$file
 done
 
-cp ~/.git-templates/hooks dir/git-hooks
+cp -a ~/.git-templates/hooks dir/git-hooks
 
 cd $dir
 git add .
