@@ -38,11 +38,11 @@ Plugin 'exitface/synthwave.vim'
 Plugin 'derekwyatt/vim-scala'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
+Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'sbdchd/neoformat'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'w0rp/ale'
+Plugin 'dense-analysis/ale'
 Plugin 'tpope/vim-fugitive'
 Plugin 'prettier/vim-prettier'
 Plugin 'hhatto/autopep8'
@@ -50,6 +50,11 @@ Plugin 'google/yapf'
 Plugin 'ambv/black'
 Plugin 'mileszs/ack.vim'
 Plugin 'leafgarland/typescript-vim'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'ericqweinstein/ruumba'
+Plugin 'mattn/emmet-vim'
+Plugin 'epilande/vim-react-snippets'
+Plugin 'SirVer/ultisnips'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -71,11 +76,14 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ALEes :help ale-lint-file-linters
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_fixers = { 'javascript': ['eslint'], 'python': ['black', 'isort', 'autopep8', 'prettier'] }
+let g:ale_fixers = { 'javascript': ['eslint'], 'python': ['black', 'isort', 'autopep8', 'prettier'], 'json': ['prettier']}
 let g:ale_linters = {
 \   'javascript': ['eslint'],
+\   'json': ['jsonlint'],
 \   'python': ['pylint', 'autopep8', 'flake8', 'black'],
 \   'scala': ['scalac'],
+\   'eruby': ['ruumba', 'erb'],
+\   'ruby': ['ruby'],
 \   'java': ['javalsp']
 \}
 let g:ale_javascript_prettier_options = '--single-quote'
@@ -121,6 +129,7 @@ set path+=**
 " Display all matching files when we tab complete
 set wildmenu
 " Split navigations
+
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
@@ -141,7 +150,6 @@ colorscheme PaperColor
 "colorscheme stormpetrel
 "colorscheme petrel
 "colorscheme crunchbang
-"colorscheme pyte
 "colorscheme srcery-drk
 "colorscheme synthwave
 "colorscheme deep-space
@@ -155,6 +163,12 @@ colorscheme PaperColor
 "endif
 "
 "set termguicolors
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"vertical line for cursor good for dark only
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"set cursorcolumn
+"hi CursorColumn ctermbg=8
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NEOFORMAT CODE formatter
@@ -318,6 +332,10 @@ nnoremap \ :Ag<SPACE>
 
 " search word under cursor
 nnoremap <C-f> :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+
+" shortcut to run emmet ,, (comma comma)
+let g:user_emmet_leader_key=','
+let g:UltiSnipsExpandTrigger="<C-l>"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
