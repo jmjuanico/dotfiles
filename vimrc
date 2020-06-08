@@ -76,7 +76,7 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ALEes :help ale-lint-file-linters
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_fixers = { 'javascript': ['eslint'], 'python': ['black', 'isort', 'autopep8', 'prettier'], 'json': ['prettier']}
+let g:ale_fixers = { 'javascript': ['eslint'], 'python': ['black', 'isort', 'autopep8', 'prettier'], 'json': ['jsonlint']}
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'json': ['jsonlint'],
@@ -163,6 +163,7 @@ colorscheme PaperColor
 "endif
 "
 "set termguicolors
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "vertical line for cursor good for dark only
@@ -197,15 +198,19 @@ let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let NERDTreeShowHidden=1
 
+" Open NERDTree always as certain width
+let g:NERDTreeWinSize = 50
+autocmd VimEnter * NERDTree
+autocmd VimEnter * set winfixwidth
+
+"" VERY SLOW so disabled as suggested
+let NERDTreeHighlightCursorline = 0
+
 " limited scope file ext for highlighting
 let g:NERDTreeLimitedSyntax = 1
 let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exact match
 let g:NERDTreeHighlightFoldersFullName = 1 " highlights the folder name
 
-" Open NERDTree always as certain width
-let g:NERDTreeWinSize = 50
-autocmd VimEnter * NERDTree
-autocmd VimEnter * set winfixwidth
 
 "   Devicons
 "   Needs the following font:

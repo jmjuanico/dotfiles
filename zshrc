@@ -104,6 +104,9 @@ source $ZSH/oh-my-zsh.sh
 # tksv	tmux kill-server
 # tkss	tmux kill-session -t
 
+# SETUP IN ITERM TO OPEN TMUX AT ALL TIMES
+# tmux ls && read ts && ta ${ts:-default} || ts ${ts:-default}
+
 # git cleanup branches
 exclude_branches="'master|staging|release|backup'"
 alias clean="git branch -vv | cut -c 3- | awk '{print "$"1}' | grep -vE ${exclude_branches}"
@@ -111,6 +114,7 @@ alias cleanforce="clean | xargs git branch -D"
 alias cleansafe="clean | xargs git branch -d"
 alias savedotfiles="bash ~/dotfiles/savedotfiles.sh"
 
+# probably have a better way than this
 export PATH="/opt/local/bin:$PATH"
 export PATH="$PATH:/usr/local/opt/freetds@0.91/bin"
 export PATH="$PATH:/Users/joey.juanico/apache-storm-0.10.0/bin"
