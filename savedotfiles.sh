@@ -21,7 +21,6 @@ fi
 echo "Go to $dir and save dotfiles"
 # save and push to git
 for file in $filestosave; do
-    echo $file
     cp ~/.$file $dir/$file
 done
 
