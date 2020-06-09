@@ -53,18 +53,52 @@ re-downloaded in order to locate PACKAGE."
 (require 'helm-mode)
 (require 'helm-config)
 (require 'elisp-format)
+(require 'autopair)
+(require 'emmet-mode)
 
-(global-set-key (kbd "C-x b") 'helm-buffers-list)
-(global-set-key (kbd "C-x r b") 'helm-bookmarks)
-(global-set-key (kbd "C-x m") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(autopair-global-mode)
+(setq helm-ag-insert-at-point 'symbol)
+(setq emmet-expand-jsx-className? t) ;; default nil
+
+(define-key evil-normal-state-map (kbd "C-i") 'eslint-fix)
+(define-key evil-normal-state-map (kbd ",,") 'emmet-expand-line)
+(define-key evil-normal-state-map (kbd "C-f l") 'helm-buffers-list)
+(define-key evil-normal-state-map (kbd "C-f m") 'helm-M-x)
+(define-key evil-normal-state-map (kbd "C-f k") 'helm-show-kill-ring)
+(define-key evil-normal-state-map (kbd "C-f b") 'helm-bookmarks)
+(define-key evil-normal-state-map (kbd "C-f s") 'helm-projectile-ag)
+(define-key evil-normal-state-map (kbd "C-f f") 'helm-find-files)
+(define-key evil-normal-state-map (kbd "C-f p") 'helm-projectile)
+
+(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+(define-key evil-normal-state-map (kbd "gd") 'dumb-jump-go)
+(define-key evil-normal-state-map (kbd "gb") 'dumb-jump-back)
+(define-key evil-normal-state-map (kbd "ge") 'dumb-jump-go-prefer-external)
 
 ;; making sure tab completion works
 (with-eval-after-load 'helm (define-key helm-find-files-map (kbd "TAB")
 			      'helm-execute-persistent-action))
 (defadvice helm-projectile-find-file (after helm-projectile-find-file activate) 
   (neotree-dir default-directory))
+
+(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Jump to files and folders
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package dumb-jump 
+  :ensure t 
+  :bind (("M-g o" . dumb-jump-go-other-window) 
+	 ("M-g j" . dumb-jump-go) 
+	 ("M-g b" . dumb-jump-back) 
+	 ("M-g q" . dumb-jump-quick-look) 
+	 ("M-g x" . dumb-jump-go-prefer-external) 
+	 ("M-g z" . dumb-jump-go-prefer-external-other-window)) 
+  :config (setq dumb-jump-selector 'helm)
+  (setq dumb-jump-force-searcher 'ag))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup Linter
@@ -116,14 +150,6 @@ re-downloaded in order to locate PACKAGE."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SHOW LINT ERRORS IF ANY ON BUFFER
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (defun show-lint-error-on-buffer  ()
-;;   (if flycheck-current-errors (flycheck-list-errors)
-;;     (when (get-buffer "*Flycheck errors*")
-;;       (switch-to-buffer "*Flycheck errors*")
-;;       (kill-buffer (current-buffer))
-;;       (delete-window))))
-;; (add-hook 'flycheck-after-syntax-check-hook #'show-lint-error-on-buffer)
-
 (defun flycheck-list-errors-only-when-errors () 
   (if flycheck-current-errors (flycheck-list-errors) 
     (-when-let (buffer (get-buffer flycheck-error-list-buffer)) 
@@ -171,9 +197,8 @@ re-downloaded in order to locate PACKAGE."
 	       (file-executable-p eslint)) 
       (setq-local options (append eslint-fix-options (list "--fix" buffer-file-name))) 
       (apply #'call-process eslint nil "*ESLint Errors*" nil options) 
-      (revert-buffer t t t)
-      (flycheck-buffer)
-      )))
+      (revert-buffer t t t) 
+      (flycheck-buffer))))
 
 (provide 'eslint-fix)
 
@@ -185,12 +210,14 @@ re-downloaded in order to locate PACKAGE."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (elisp-format exec-path-from-shell web-mode flycheck json-mode
-						  evil-collection use-package js2-mode undo-tree
-						  evil-commentary evil-surround all-the-icons-dired
-						  all-the-icons-ivy all-the-icons helm-projectile
-						  helm-lsp lsp-mode helm js-react-redux-yasnippets
-						  evil-magit add-node-modules-path neotree evil))))
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(custom-enabled-themes (quote (adwaita)))
+ '(package-selected-packages
+   (quote
+    (emmet-mode helm-ag autopair dumb-jump elisp-format exec-path-from-shell web-mode flycheck json-mode evil-collection use-package js2-mode undo-tree evil-commentary evil-surround all-the-icons-dired all-the-icons-ivy all-the-icons helm-projectile helm-lsp lsp-mode helm js-react-redux-yasnippets evil-magit add-node-modules-path neotree evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
