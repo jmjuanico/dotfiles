@@ -8,7 +8,7 @@
 
 dir=~/dotfiles
 githooks=~/.git-templates/hooks
-filestosave="bashrc vimrc zshrc gitignore gitconfig emacs.d/init.el"
+filestosave="bashrc vimrc zshrc gitignore gitconfig emacs.d/init.el emacs.d/boot.org"
 
 ##########
 

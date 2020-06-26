@@ -114,6 +114,12 @@ alias cleanforce="clean | xargs git branch -D"
 alias cleansafe="clean | xargs git branch -d"
 alias savedotfiles="bash ~/dotfiles/savedotfiles.sh"
 
+if [ -n "$INSIDE_EMACS" ]; then
+  chpwd() { print -P "\033AnSiTc %d" }
+  print -P "\033AnSiTu %n"
+  print -P "\033AnSiTc %d"
+fi
+
 # probably have a better way than this
 export PATH="/opt/local/bin:$PATH"
 export PATH="$PATH:/usr/local/opt/freetds@0.91/bin"
@@ -130,3 +136,5 @@ export PATH="/usr/local/opt/mongodb@3.2/bin:$PATH"
 export PATH="/usr/local/opt/sqlite/bin:$PATH"
 export PATH="/usr/local/opt/freetds@0.91/bin:$PATH"
 export PATH="/usr/local/opt/maven@3.2/bin:$PATH"
+export PATH="/usr/local/texlive/2020basic/bin/x86_64-darwin:$PATH"
+export PATH="$PATH:/Users/joey.juanico/.gem/ruby/2.3.0/bin"
