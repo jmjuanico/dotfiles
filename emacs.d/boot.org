@@ -10,6 +10,7 @@
       (setq evil-want-keybinding nil)
       (setq evil-want-C-u-scroll t)
       (setq evil-want-C-i-jump nil)
+      (setq x-select-enable-clipboard t)
       (setq evil-search-module 'evil-search evil-want-C-u-scroll t evil-want-C-w-in-emacs-state t)
       :config
       (when (require 'evil-collection nil t) (evil-collection-init))
@@ -43,6 +44,8 @@
     :config
       (require 'all-the-icons) ;; TODO not working
       (setq neo-smart-open t)
+      (setq-default neo-show-hidden-files t)
+      (setq neo-window-width 35)
       (evil-set-initial-state 'neotree-mode 'normal)
       ;; (evil-define-key 'normal neotree-mode-map
       ;;   (kbd "RET") 'neotree-enter
@@ -68,12 +71,12 @@
 (require 'helm-config)
 (setq helm-ag-insert-at-point 'symbol)
 
-(define-key evil-normal-state-map (kbd "C-f b") 'helm-buffers-list)
-(define-key evil-normal-state-map (kbd "C-f k") 'helm-show-kill-ring)
-(define-key evil-normal-state-map (kbd "C-f l") 'helm-bookmarks)
-(define-key evil-normal-state-map (kbd "C-f s") 'helm-projectile-ag)
-(define-key evil-normal-state-map (kbd "C-f f") 'helm-find-files)
-(define-key evil-normal-state-map (kbd "C-f p") 'helm-projectile)
+(define-key evil-normal-state-map (kbd "C-x b") 'helm-buffers-list)
+(define-key evil-normal-state-map (kbd "C-x k") 'helm-show-kill-ring)
+(define-key evil-normal-state-map (kbd "C-x l") 'helm-bookmarks)
+(define-key evil-normal-state-map (kbd "C-x s") 'helm-projectile-ag)
+(define-key evil-normal-state-map (kbd "C-x f") 'helm-find-files)
+(define-key evil-normal-state-map (kbd "C-x p") 'helm-projectile)
 (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
 (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
 
@@ -303,19 +306,34 @@ ORDER BY updatedDate DESC, createdDate DESC "
 
 #+END_SRC
 
-** Miscellaneous
+** Key bindings
 #+BEGIN_SRC emacs-lisp
 (require 'elisp-format)
 
-(define-key evil-normal-state-map (kbd "C-f i") 'eslint-fix)
-(define-key evil-normal-state-map (kbd "C-f m") 'buffer-menu)
-(define-key evil-normal-state-map (kbd "C-f w") 'save-buffer)
-(define-key evil-normal-state-map (kbd "C-f g") 'magit-status)
+;; git and eslint and buffers
+(define-key evil-normal-state-map (kbd "C-x i") 'eslint-fix)
+(define-key evil-normal-state-map (kbd "C-x m") 'buffer-menu)
+(define-key evil-normal-state-map (kbd "C-x w") 'save-buffer)
+(define-key evil-normal-state-map (kbd "C-x g") 'magit-status)
+
+;; window navigation
+(define-key evil-normal-state-map (kbd "C-h") #'evil-window-left)
+(define-key evil-normal-state-map (kbd "C-j") #'evil-window-down)
+(define-key evil-normal-state-map (kbd "C-k") #'evil-window-up)
+(define-key evil-normal-state-map (kbd "C-l") #'evil-window-right)
+
+;; help commands
+(define-key evil-normal-state-map (kbd "C-x hk") 'describe-key)
+(define-key evil-normal-state-map (kbd "C-x hf") 'describe-function)
+
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
  
 ;; image will not show
 (setq org-image-actual-width nil)
+
+;; enable js2-mode
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 #+END_SRC
 
 ** Taskjuggler
@@ -454,6 +472,45 @@ startbuffer startcredit statusnote chargeset charge booking))
   (add-hook 'dired-mode-hook 'org-download-enable))
 
 (setq-default org-download-image-dir "~/apps/org/images")
+#+END_SRC
+
+** World Time
+#+BEGIN_SRC emacs-lisp
+(setq display-time-world-time-format "\t%A %D %r %Z Week-%W")
+(setq display-time-world-list '(
+                                ("UTC" "Universal")
+                                ("Asia/Manila" "Cebu")
+                                ("Asia/Kolkata" "Hyderabad")
+                                ("America/Chicago" "Austin")                               
+                                ("Europe/London" "Scotland")                               
+                                ("America/Phoenix" "Scottsdale")))
+
+(define-key evil-normal-state-map (kbd "C-x t") 'helm-world-time)
+(define-key evil-normal-state-map (kbd "C-x w") 'world-time-list)
+#+END_SRC
+
+** Web mode
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.jsx?$" . web-mode)) ;; auto-enable for .js/.jsx files
+(setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
+
+;; adjust indents for web-mode to 2 spaces
+(defun my-web-mode-hook ()
+  "Hooks for Web mode. Adjust indents"
+  ;;; http://web-mode.org/
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2))
+(add-hook 'web-mode-hook  'my-web-mode-hook) 
+
+#+END_SRC
+
+** Emacs backup files
+#+BEGIN_SRC emacs-lisp
+;; do not create # files for not saving
+(setq create-lockfiles nil)
+;; save backup files here rather than on the project dir
+(setq backup-directory-alist `(("." . "~/.emacs.d/backup-files")))
 #+END_SRC
 
 

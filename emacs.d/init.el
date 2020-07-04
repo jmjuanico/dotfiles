@@ -37,11 +37,24 @@
  '(org-agenda-files (quote ("~/Apps/org/road-map.org")))
  '(package-selected-packages
    (quote
-    (org-download htmlize org-plus-contrib tj3-mode spacemacs-theme origami web-mode use-package org-jira neotree json-mode js2-mode js-react-redux-yasnippets helm-projectile helm-lsp helm-ag flycheck exec-path-from-shell evil-surround evil-magit evil-commentary evil-collection emmet-mode elisp-format dumb-jump autopair all-the-icons-ivy all-the-icons-dired add-node-modules-path)))
+    (world-time-mode org-download htmlize org-plus-contrib tj3-mode spacemacs-theme origami web-mode use-package org-jira neotree json-mode js2-mode js-react-redux-yasnippets helm-projectile helm-lsp helm-ag flycheck exec-path-from-shell evil-surround evil-magit evil-commentary evil-collection emmet-mode elisp-format dumb-jump autopair all-the-icons-ivy all-the-icons-dired add-node-modules-path)))
  '(pdf-view-midnight-colors (quote ("#5f5f87" . "#ffffff"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cursor ((t (:background "color-39")))))
+ '(bookmark-menu-bookmark ((t (:foreground "color-33" :weight bold))))
+ '(bookmark-menu-heading ((t (:inherit font-lock-type-face :foreground "color-33"))))
+ '(buffer-menu-buffer ((t (:foreground "color-33" :weight bold))))
+ '(cursor ((t (:background "color-39"))))
+ '(flycheck-error ((t (:background "color-220" :underline (:color "black" :style wave)))))
+ '(helm-bookmark-file ((t (:foreground "color-33"))))
+ '(helm-buffer-directory ((t (:background "#ffffff" :foreground "color-33"))))
+ '(helm-buffer-file ((t (:background "#ffffff" :foreground "color-33"))))
+ '(info-menu-header ((t (:foreground "color-33" :underline t :weight bold))))
+ '(org-column ((t (:background "white"))))
+ '(org-level-3 ((t (:foreground "blue" :weight normal :height 1.1))))
+ '(org-meta-line ((t (:foreground "color-244"))))
+ '(org-tag ((t (:foreground "color-75"))))
+ '(web-mode-html-tag-bracket-face ((t (:foreground "color-247")))))
