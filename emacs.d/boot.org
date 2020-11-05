@@ -10,7 +10,7 @@
       (setq evil-want-keybinding nil)
       (setq evil-want-C-u-scroll t)
       (setq evil-want-C-i-jump nil)
-      (setq x-select-enable-clipboard t)
+      (setq x-select-enable-clipboard nil)
       (setq evil-search-module 'evil-search evil-want-C-u-scroll t evil-want-C-w-in-emacs-state t)
       :config
       (when (require 'evil-collection nil t) (evil-collection-init))
@@ -23,7 +23,7 @@
       :ensure t
       :diminish evil-commentary-mode
       :config (evil-commentary-mode))
-
+      
 #+END_SRC
 
 ** Evil Magit
@@ -44,24 +44,13 @@
     :config
       (require 'all-the-icons) ;; TODO not working
       (setq neo-smart-open t)
-      (setq-default neo-show-hidden-files t)
       (setq neo-window-width 35)
+      (setq neo-show-hidden-files nil)
+      ;; (setq-default neo-show-hidden-files t)
       (evil-set-initial-state 'neotree-mode 'normal)
-      ;; (evil-define-key 'normal neotree-mode-map
-      ;;   (kbd "RET") 'neotree-enter
-      ;;   (kbd "c")   'neotree-create-node
-      ;;   (kbd "r")   'neotree-rename-node
-      ;;   (kbd "d")   'neotree-delete-node
-      ;;   (kbd "j")   'neotree-next-node
-      ;;   (kbd "k")   'neotree-previous-node
-      ;;   (kbd "g")   'neotree-refresh
-      ;;   (kbd "C")   'neotree-change-root
-      ;;   (kbd "I")   'neotree-hidden-file-toggle
-      ;;   (kbd "H")   'neotree-hidden-file-toggle
-      ;;   (kbd "q")   'neotree-hide
-      ;;   (kbd "l")   'neotree-enter
-      ;;   )
+      (setq neo-hidden-regexp-list '("\\.pyc$" "~$" "^#.*#$" "\\.elc$" "\\.o$" "__pycache__" "\\.swp$" "\\.swo$" "\\.DS_Store$"))
 )
+
 #+END_SRC
 
 ** Helm
@@ -288,21 +277,18 @@ ORDER BY updatedDate DESC, createdDate DESC "
 
 ** Landing page
 #+BEGIN_SRC emacs-lisp
-;; Disable the splash screen (to enable it agin, replace the t with 0)
-(setq inhibit-splash-screen t)
-;; Enable transient mark mode
-(transient-mark-mode 1)
-;; Enable Org mode
-(require 'org)
-;; Make Org mode work with files ending in .org
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-;; The above is the default in recent emacsen
+;; Enable dashboard as start screen
+(use-package dashboard
+    :ensure t
+    ;; :diminish dashboard-mode
+    :config
+    (setq dashboard-center-content t)
+    (setq dashboard-items '((recents  . 10)
+                            (bookmarks . 20)))
+    (setq dashboard-set-footer nil)
+    (setq dashboard-init-info "Welcome to EMACS!")
+    (dashboard-setup-startup-hook))
 
-;; Set bookmarklist as default for emac
-(setq inhibit-splash-screen t)
-(require 'bookmark)
-(bookmark-bmenu-list)
-(switch-to-buffer "*Bookmark List*")
 
 #+END_SRC
 
@@ -389,8 +375,9 @@ startbuffer startcredit statusnote chargeset charge booking))
 
 ** Org Mode
 #+BEGIN_SRC emacs-lisp
-(setq org-log-done 'time)
-(setq org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "IN PROGRESS(p)" "|" "DONE(d!)" "CANCELLED(c)")))
+;; (setq org-log-done 'time)
+(setq org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "HOLD(h)" "IN PROGRESS(p)" "|" "DONE(d!)" "CANCELLED(c)")))
+(setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
 #+END_SRC
 
 ** Org Agenda evil mode
@@ -491,6 +478,8 @@ startbuffer startcredit statusnote chargeset charge booking))
 
 ** Web mode
 #+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.tsx$" . typescript-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx?$" . web-mode)) ;; auto-enable for .js/.jsx files
 (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
 
@@ -502,6 +491,7 @@ startbuffer startcredit statusnote chargeset charge booking))
   (setq web-mode-css-indent-offset 2)
   (setq web-mode-code-indent-offset 2))
 (add-hook 'web-mode-hook  'my-web-mode-hook) 
+(add-hook 'after-save-hook 'evil-ex-nohighlight)
 
 #+END_SRC
 
@@ -513,5 +503,82 @@ startbuffer startcredit statusnote chargeset charge booking))
 (setq backup-directory-alist `(("." . "~/.emacs.d/backup-files")))
 #+END_SRC
 
+** Embed youtube
+#+BEGIN_SRC emacs-lisp
+ (defvar yt-iframe-format
+   ;; You may want to change your width and height.
+   (concat "<iframe width=\"440\""
+           " height=\"335\""
+           " src=\"https://www.youtube.com/embed/%s\""
+           " frameborder=\"0\""
+           " allowfullscreen>%s</iframe>"))
+ 
+ (org-add-link-type
+  "yt"
+  (lambda (handle)
+    (browse-url
+     (concat "https://www.youtube.com/embed/"
+             handle)))
+  (lambda (path desc backend)
+    (cl-case backend
+      (html (format yt-iframe-format
+                    path (or desc "")))
+      (latex (format "\href{%s}{%s}"
+                     path (or desc "video"))))))
+#+END_SRC
 
+** Multi term
+#+BEGIN_SRC emacs-lisp
+(require 'multi-term)
+(setq multi-term-program "/bin/zsh")
+(defun last-term-buffer (l)
+      "Return most recently used term buffer."
+      (when l
+  (if (eq 'term-mode (with-current-buffer (car l) major-mode))
+      (car l) (last-term-buffer (cdr l)))))
 
+    (defun get-term ()
+      "Switch to the term buffer last used, or create a new one if
+    none exists, or if the current buffer is already a term."
+      (interactive)
+      (let ((b (last-term-buffer (buffer-list))))
+  (if (or (not b) (eq 'term-mode major-mode))
+      (multi-term)
+    (switch-to-buffer b))))
+#+END_SRC
+
+** Row Number
+#+BEGIN_SRC emacs-lisp
+(global-linum-mode 1) ; always show line numbers
+
+; disable line number when term mode
+(add-hook 'term-mode-hook 'my-inhibit-global-linum-mode)
+(defun my-inhibit-global-linum-mode ()
+  "Counter-act `global-linum-mode'."
+  (add-hook 'after-change-major-mode-hook
+            (lambda () (linum-mode 0))
+            :append :local))
+#+END_SRC
+** Clipboard
+#+BEGIN_SRC emacs-lisp
+;; breaks evil
+;; (defun copy-from-osx ()
+;; (shell-command-to-string "pbpaste"))
+;; 
+;; (defun paste-to-osx (text &optional push)
+;; (let ((process-connection-type nil))
+;; (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+;; (process-send-string proc text)
+;; (process-send-eof proc))))
+;; 
+;; (setq interprogram-cut-function 'paste-to-osx)
+;; (setq interprogram-paste-function 'copy-from-osx) 
+#+END_SRC
+
+** Company
+#+BEGIN_SRC emacs-lisp
+(use-package company
+:ensure t
+:init
+(add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
