@@ -37,7 +37,7 @@
  '(org-agenda-files nil)
  '(package-selected-packages
    (quote
-    (scala-mode company yaml-mode typescript-mode multi-term dashboard world-time-mode org-download htmlize org-plus-contrib tj3-mode spacemacs-theme origami web-mode use-package org-jira neotree json-mode js2-mode js-react-redux-yasnippets helm-projectile helm-lsp helm-ag flycheck exec-path-from-shell evil-surround evil-magit evil-commentary evil-collection emmet-mode elisp-format dumb-jump autopair all-the-icons-ivy all-the-icons-dired add-node-modules-path)))
+    (wgrep-helm wgrep scala-mode company yaml-mode typescript-mode multi-term dashboard world-time-mode org-download htmlize org-plus-contrib tj3-mode spacemacs-theme origami web-mode use-package org-jira neotree json-mode js2-mode js-react-redux-yasnippets helm-projectile helm-lsp helm-ag flycheck exec-path-from-shell evil-surround evil-magit evil-commentary evil-collection emmet-mode elisp-format dumb-jump autopair all-the-icons-ivy all-the-icons-dired add-node-modules-path)))
  '(pdf-view-midnight-colors (quote ("#5f5f87" . "#ffffff"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

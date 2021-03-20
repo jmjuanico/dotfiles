@@ -55,11 +55,15 @@
 
 ** Helm
 #+BEGIN_SRC emacs-lisp
+(use-package wgrep
+  :ensure t
+  :config (use-package wgrep-helm :ensure t))
 (require 'helm)
 (require 'helm-mode)
 (require 'helm-config)
 (setq helm-ag-insert-at-point 'symbol)
 
+(define-key evil-normal-state-map (kbd "C-c C-e") 'wgrep-change-to-wgrep-mode)
 (define-key evil-normal-state-map (kbd "C-x b") 'helm-buffers-list)
 (define-key evil-normal-state-map (kbd "C-x k") 'helm-show-kill-ring)
 (define-key evil-normal-state-map (kbd "C-x l") 'helm-bookmarks)
