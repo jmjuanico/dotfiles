@@ -209,7 +209,7 @@ ORDER BY updatedDate DESC, createdDate DESC "
 (let* ((root (locate-dominating-file (or (buffer-file-name)
 					default-directory) "node_modules"))
 	(eslint (and root
-		    (expand-file-name "node_modules/eslint/bin/eslint.js" root))))
+		    (expand-file-name "node_modules/.bin/eslint" root))))
     (when (and eslint
 	    (file-executable-p eslint))
     (setq-local flycheck-javascript-eslint-executable eslint))))
@@ -268,7 +268,7 @@ ORDER BY updatedDate DESC, createdDate DESC "
 (let* ((root (locate-dominating-file (or (buffer-file-name)
 					default-directory) "node_modules"))
 	(eslint (and root
-		    (expand-file-name "node_modules/eslint/bin/eslint.js" root))))
+		    (expand-file-name "node_modules/.bin/eslint" root))))
     (when (and eslint
 	    (file-executable-p eslint))
     (setq-local options (append eslint-fix-options (list "--fix" buffer-file-name)))
@@ -301,10 +301,12 @@ ORDER BY updatedDate DESC, createdDate DESC "
 (require 'elisp-format)
 
 ;; git and eslint and buffers
+(define-key evil-normal-state-map (kbd "C-x ib") 'flycheck-list-errors-only-when-errors)
 (define-key evil-normal-state-map (kbd "C-x i") 'eslint-fix)
-(define-key evil-normal-state-map (kbd "C-x m") 'buffer-menu)
+(define-key evil-normal-state-map (kbd "C-x m") 'multi-term)
 (define-key evil-normal-state-map (kbd "C-x w") 'save-buffer)
 (define-key evil-normal-state-map (kbd "C-x g") 'magit-status)
+
 
 ;; window navigation
 (define-key evil-normal-state-map (kbd "C-h") #'evil-window-left)
