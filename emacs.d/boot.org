@@ -23,33 +23,37 @@
       :ensure t
       :diminish evil-commentary-mode
       :config (evil-commentary-mode))
-      
-#+END_SRC
+    (use-package evil-collection
+        :custom (evil-collection-term-sync-state-and-mode-p t)
+        :init (evil-collection-init))
+    (use-package evil-collection
+    :custom (evil-collection-setup-minibuffer t)
+    :init (evil-collection-init))
 
-** Evil Magit
-#+BEGIN_SRC emacs-lisp
-;; optional: this is the evil state that evil-magit will use
-;; (setq evil-magit-state 'normal)
-;; optional: disable additional bindings for yanking text
-;; (setq evil-magit-use-y-for-yank nil)
-(require 'evil-magit)
 #+END_SRC
 
 ** Neotree
 #+BEGIN_SRC emacs-lisp
-  (use-package neotree
-    :ensure t
-    :bind (("<f8>" . neotree-toggle))
-    :defer
-    :config
-      (require 'all-the-icons) ;; TODO not working
-      (setq neo-smart-open t)
-      (setq neo-window-width 35)
-      (setq neo-show-hidden-files nil)
-      ;; (setq-default neo-show-hidden-files t)
-      (evil-set-initial-state 'neotree-mode 'normal)
-      (setq neo-hidden-regexp-list '("\\.pyc$" "~$" "^#.*#$" "\\.elc$" "\\.o$" "__pycache__" "\\.swp$" "\\.swo$" "\\.DS_Store$"))
-)
+      (use-package neotree
+        :ensure t
+        :bind (("<f8>" . neotree-toggle))
+        :defer
+        :config
+          (require 'all-the-icons) ;; TODO not working
+          (setq neo-smart-open t)
+          (setq neo-window-width 35)
+          (setq neo-show-hidden-files nil)
+          ;; (setq-default neo-show-hidden-files t)
+          (evil-set-initial-state 'neotree-mode 'normal)
+          (setq neo-hidden-regexp-list '("\\.pyc$" "~$" "^#.*#$" "\\.elc$" "\\.o$" "__pycache__" "\\.swp$" "\\.swo$" "\\.DS_Store$"))
+    )
+  (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+(add-hook 'neotree-mode-hook
+      (lambda ()
+        (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter-vertical-split)
+        (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter-horizontal-split)
+        (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+        (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
 
 #+END_SRC
 
@@ -95,10 +99,10 @@
 
 ** Emmet
 #+BEGIN_SRC emacs-lisp
-(require 'autopair)
+(require 'phi-autopair)
 (require 'emmet-mode)
 (setq emmet-expand-jsx-className? t) ;; default nil
-(autopair-global-mode)
+(phi-autopair-global-mode)
 (define-key evil-normal-state-map (kbd ",,") 'emmet-expand-line)
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
