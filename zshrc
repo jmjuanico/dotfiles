@@ -71,7 +71,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=( git jira docker web-search )
 
 source $ZSH/oh-my-zsh.sh
 
@@ -100,3 +100,33 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# NOTES TMUX SHORTCUTS
+# ta	tmux attach -t
+# tad	tmux attach -d -t
+# ts	tmux new-session -s
+# tl	tmux list-sessions
+# tksv	tmux kill-server
+# tkss	tmux kill-session -t
+
+# SETUP IN ITERM TO OPEN TMUX AT ALL TIMES
+# tmux ls && read ts && ta ${ts:-default} || ts ${ts:-default}
+
+# git cleanup branches
+exclude_branches="'master|staging|release|backup'"
+alias clean="git branch -vv | cut -c 3- | awk '{print "$"1}' | grep -vE ${exclude_branches}"
+alias cleanforce="clean | xargs git branch -D"
+alias cleansafe="clean | xargs git branch -d"
+alias savedotfiles="bash ~/dotfiles/savedotfiles.sh"
+
+if [ -n "$INSIDE_EMACS" ]; then
+  chpwd() { print -P "\033AnSiTc %d" }
+  print -P "\033AnSiTu %n"
+  print -P "\033AnSiTc %d"
+fi
+
+export PATH="/opt/local/bin:$PATH"
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+export PATH="/usr/local/opt/freetds@0.91/bin:$PATH"

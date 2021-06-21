@@ -29,31 +29,35 @@
     (use-package evil-collection
     :custom (evil-collection-setup-minibuffer t)
     :init (evil-collection-init))
+    (use-package evil-collection
+    :custom (evil-collection-want-unimpaired-p t)
+    :init (evil-collection-init))
 
 #+END_SRC
 
 ** Neotree
 #+BEGIN_SRC emacs-lisp
-      (use-package neotree
-        :ensure t
-        :bind (("<f8>" . neotree-toggle))
-        :defer
-        :config
-          (require 'all-the-icons) ;; TODO not working
-          (setq neo-smart-open t)
-          (setq neo-window-width 35)
-          (setq neo-show-hidden-files nil)
-          ;; (setq-default neo-show-hidden-files t)
-          (evil-set-initial-state 'neotree-mode 'normal)
-          (setq neo-hidden-regexp-list '("\\.pyc$" "~$" "^#.*#$" "\\.elc$" "\\.o$" "__pycache__" "\\.swp$" "\\.swo$" "\\.DS_Store$"))
-    )
-  (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
-(add-hook 'neotree-mode-hook
-      (lambda ()
-        (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter-vertical-split)
-        (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter-horizontal-split)
-        (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
-        (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+        (use-package neotree
+          :ensure t
+          :bind (("<f8>" . neotree-toggle))
+          :defer
+          :config
+            (require 'all-the-icons) ;; TODO not working
+            (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+            (setq neo-smart-open t)
+            (setq neo-window-width 35)
+            (setq neo-show-hidden-files nil)
+            ;; (setq-default neo-show-hidden-files t)
+            (evil-set-initial-state 'neotree-mode 'normal)
+            (setq neo-hidden-regexp-list '("\\.pyc$" "~$" "^#.*#$" "\\.elc$" "\\.o$" "__pycache__" "\\.swp$" "\\.swo$" "\\.DS_Store$"))
+      )
+    (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+  (add-hook 'neotree-mode-hook
+        (lambda ()
+          (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter-vertical-split)
+          (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter-horizontal-split)
+          (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+          (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
 
 #+END_SRC
 
@@ -65,6 +69,7 @@
 (require 'helm)
 (require 'helm-mode)
 (require 'helm-config)
+(require 'helm-projectile)
 (setq helm-ag-insert-at-point 'symbol)
 
 (define-key evil-normal-state-map (kbd "C-c C-e") 'wgrep-change-to-wgrep-mode)
@@ -164,45 +169,49 @@ ORDER BY updatedDate DESC, createdDate DESC "
 
 ** Dumb Jump
 #+BEGIN_SRC emacs-lisp
-;; Jump to files and folders
-(use-package dumb-jump
-:ensure t
-:bind (("M-g o" . dumb-jump-go-other-window)
-	("M-g j" . dumb-jump-go)
-	("M-g b" . dumb-jump-back)
-	("M-g q" . dumb-jump-quick-look)
-	("M-g x" . dumb-jump-go-prefer-external)
-	("M-g z" . dumb-jump-go-prefer-external-other-window))
-:config (setq dumb-jump-selector 'helm)
-(setq dumb-jump-force-searcher 'ag))
+  ;; Jump to files and folders
+  ;; Need to brew install the_silver_searcher
+  (use-package dumb-jump
+  :ensure t
+  :bind (("M-g o" . dumb-jump-go-other-window)
+          ("M-g j" . dumb-jump-go)
+          ("M-g b" . dumb-jump-back)
+          ("M-g q" . dumb-jump-quick-look)
+          ("M-g x" . dumb-jump-go-prefer-external)
+          ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config (setq dumb-jump-selector 'helm)
+  (setq dumb-jump-force-searcher 'ag))
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 
-(define-key evil-normal-state-map (kbd "gd") 'dumb-jump-go)
-(define-key evil-normal-state-map (kbd "gb") 'dumb-jump-back)
-(define-key evil-normal-state-map (kbd "ge") 'dumb-jump-go-prefer-external)
+  (define-key evil-normal-state-map (kbd "gd") 'dumb-jump-go)
+  (define-key evil-normal-state-map (kbd "gb") 'dumb-jump-back)
+  (define-key evil-normal-state-map (kbd "ge") 'dumb-jump-go-prefer-external)
 
 #+END_SRC
 
 ** Linter Flycheck
 #+BEGIN_SRC emacs-lisp
-;; Setup Linter
-;; http://codewinds.com/blog/2015-04-02-emacs-flycheck-eslint-jsx.html
-;; use web-mode for .jsx files
-(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
-;; http://www.flycheck.org/manual/latest/index.html
-(require 'flycheck)
-;; turn on flychecking globally
-(add-hook 'after-init-hook #'global-flycheck-mode)
-;; disable jshint since we prefer eslint checking
-(setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
-;; use eslint with web-mode for jsx files
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-;; customize flycheck temp file prefix
-(setq-default flycheck-temp-prefix ".flycheck")
-;; disable json-jsonlist checking for json files
-(setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
-;; Setup Mac only
-(when (memq window-system '(mac ns))
-(exec-path-from-shell-initialize))
+  ;; Setup Linter
+  ;; http://codewinds.com/blog/2015-04-02-emacs-flycheck-eslint-jsx.html
+  ;; use web-mode for .jsx files
+
+  (require 'web-mode)
+  (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+  ;; http://www.flycheck.org/manual/latest/index.html
+  (require 'flycheck)
+  ;; turn on flychecking globally
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  ;; disable jshint since we prefer eslint checking
+  (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
+  ;; use eslint with web-mode for jsx files
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  ;; customize flycheck temp file prefix
+  (setq-default flycheck-temp-prefix ".flycheck")
+  ;; disable json-jsonlist checking for json files
+  (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
+  ;; Setup Mac only
+  (when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
 #+END_SRC
 
 ** Setup project linter
