@@ -3,35 +3,35 @@
 * Emacs Evil
 ** Evil
 #+BEGIN_SRC emacs-lisp
-    (use-package evil
-      :ensure t
-      :init
-      (setq evil-want-integration t)
-      (setq evil-want-keybinding nil)
-      (setq evil-want-C-u-scroll t)
-      (setq evil-want-C-i-jump nil)
-      (setq x-select-enable-clipboard nil)
-      (setq evil-search-module 'evil-search evil-want-C-u-scroll t evil-want-C-w-in-emacs-state t)
-      :config
-      (when (require 'evil-collection nil t) (evil-collection-init))
-      (evil-mode))
-    (use-package evil-surround
-      :ensure t
-      :config
-      (global-evil-surround-mode t))
-    (use-package evil-commentary
-      :ensure t
-      :diminish evil-commentary-mode
-      :config (evil-commentary-mode))
-    (use-package evil-collection
-        :custom (evil-collection-term-sync-state-and-mode-p t)
-        :init (evil-collection-init))
-    (use-package evil-collection
-    :custom (evil-collection-setup-minibuffer t)
-    :init (evil-collection-init))
-    (use-package evil-collection
-    :custom (evil-collection-want-unimpaired-p t)
-    :init (evil-collection-init))
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    (setq x-select-enable-clipboard nil)
+    (setq evil-search-module 'evil-search evil-want-C-u-scroll t evil-want-C-w-in-emacs-state t)
+    :config
+    (when (require 'evil-collection nil t) (evil-collection-init))
+    (evil-mode))
+  (use-package evil-surround
+    :ensure t
+    :config
+    (global-evil-surround-mode t))
+  (use-package evil-commentary
+    :ensure t
+    :diminish evil-commentary-mode
+    :config (evil-commentary-mode))
+  (use-package evil-collection
+      :custom (evil-collection-term-sync-state-and-mode-p t)
+      :init (evil-collection-init))
+  (use-package evil-collection
+  :custom (evil-collection-setup-minibuffer t)
+  :init (evil-collection-init))
+  (use-package evil-collection
+  :custom (evil-collection-want-unimpaired-p t)
+  :init (evil-collection-init))
 
 #+END_SRC
 
@@ -548,22 +548,22 @@ startbuffer startcredit statusnote chargeset charge booking))
 
 ** Multi term
 #+BEGIN_SRC emacs-lisp
-(require 'multi-term)
-(setq multi-term-program "/bin/zsh")
-(defun last-term-buffer (l)
-      "Return most recently used term buffer."
-      (when l
-  (if (eq 'term-mode (with-current-buffer (car l) major-mode))
-      (car l) (last-term-buffer (cdr l)))))
+    (require 'multi-term)
+    (setq multi-term-program "/bin/zsh")
+    (defun last-term-buffer (l)
+          "Return most recently used term buffer."
+          (when l
+      (if (eq 'term-mode (with-current-buffer (car l) major-mode))
+          (car l) (last-term-buffer (cdr l)))))
 
-    (defun get-term ()
-      "Switch to the term buffer last used, or create a new one if
-    none exists, or if the current buffer is already a term."
-      (interactive)
-      (let ((b (last-term-buffer (buffer-list))))
-  (if (or (not b) (eq 'term-mode major-mode))
-      (multi-term)
-    (switch-to-buffer b))))
+        (defun get-term ()
+          "Switch to the term buffer last used, or create a new one if
+        none exists, or if the current buffer is already a term."
+          (interactive)
+          (let ((b (last-term-buffer (buffer-list))))
+      (if (or (not b) (eq 'term-mode major-mode))
+          (multi-term)
+        (switch-to-buffer b))))
 #+END_SRC
 
 ** Row Number
