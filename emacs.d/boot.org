@@ -47,6 +47,7 @@
             (setq neo-smart-open t)
             (setq neo-window-width 35)
             (setq neo-show-hidden-files nil)
+	        (setq neo-vc-integration nil) ;; Making it slow if enbled
             ;; (setq-default neo-show-hidden-files t)
             (evil-set-initial-state 'neotree-mode 'normal)
             (setq neo-hidden-regexp-list '("\\.pyc$" "~$" "^#.*#$" "\\.elc$" "\\.o$" "__pycache__" "\\.swp$" "\\.swo$" "\\.DS_Store$"))
