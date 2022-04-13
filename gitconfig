@@ -4,7 +4,7 @@
 name = jmjuanico
 email = joey.juanico@gmail.com
 [core]
-	editor = /opt/local/bin/vim
+	editor = vim
 	excludesfile = /Users/joey.juanico/.gitignore
 [init]
 	templatedir = ~/.git-templates
