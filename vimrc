@@ -33,7 +33,6 @@ Plugin 'ctrlp.vim'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'nightsense/vim-crunchbang'
-Plugin 'kudabux/vim-srcery-drk'
 Plugin 'exitface/synthwave.vim'
 Plugin 'derekwyatt/vim-scala'
 Plugin 'mustache/vim-mustache-handlebars'
@@ -217,6 +216,10 @@ let g:NERDTreeHighlightFoldersFullName = 1 " highlights the folder name
 "   brew tap caskroom/fonts
 "   brew cask install font-hack-nerd-font
 "   ~default file icon
+if exists("g:loaded_webdevicons")
+	call webdevicons#refresh()
+endif
+set guifont=Hack\ Nerd\ Font:14
 let g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol = ''
 "   ~default folder icon
 let g:WebDevIconsUnicodeDecorateFolderNodes = 1
@@ -319,6 +322,8 @@ autocmd BufEnter,InsertLeave * :syntax sync fromstart
 "  Searching texts within files
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The Silver Searcher
+" Make sure silver searcher is installed in your computer
+" brew install the_silver_searcher
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
   " Use ag over grep

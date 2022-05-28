@@ -37,17 +37,17 @@
 
 ** Neotree
 #+BEGIN_SRC emacs-lisp
+        (use-package all-the-icons)
         (use-package neotree
           :ensure t
           :bind (("<f8>" . neotree-toggle))
           :defer
           :config
-            (require 'all-the-icons) ;; TODO not working
             (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
             (setq neo-smart-open t)
             (setq neo-window-width 35)
             (setq neo-show-hidden-files nil)
-	        (setq neo-vc-integration nil) ;; Making it slow if enbled
+            (setq neo-vc-integration nil) ;; Making it slow if enabled
             ;; (setq-default neo-show-hidden-files t)
             (evil-set-initial-state 'neotree-mode 'normal)
             (setq neo-hidden-regexp-list '("\\.pyc$" "~$" "^#.*#$" "\\.elc$" "\\.o$" "__pycache__" "\\.swp$" "\\.swo$" "\\.DS_Store$"))
@@ -60,6 +60,27 @@
           (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
           (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
 
+#+END_SRC
+
+** Doom Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes
+    :ensure t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-one t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable custom neotree theme (all-the-icons must be installed!)
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
 #+END_SRC
 
 ** Helm
@@ -184,9 +205,9 @@ ORDER BY updatedDate DESC, createdDate DESC "
   (setq dumb-jump-force-searcher 'ag))
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 
-  (define-key evil-normal-state-map (kbd "gd") 'dumb-jump-go)
-  (define-key evil-normal-state-map (kbd "gb") 'dumb-jump-back)
-  (define-key evil-normal-state-map (kbd "ge") 'dumb-jump-go-prefer-external)
+  (define-key evil-normal-state-map (kbd "gd") 'xref-find-definitions) ;; prev dumb-jump-go
+  (define-key evil-normal-state-map (kbd "gb") 'xref-pop-marker-stack) ;; dumb-jump-back
+  (define-key evil-normal-state-map (kbd "ge") 'dumb-jump-go-prefer-external) ;; dumb-jump-go-prefer-external
 
 #+END_SRC
 
@@ -334,7 +355,7 @@ ORDER BY updatedDate DESC, createdDate DESC "
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
- 
+
 ;; image will not show
 (setq org-image-actual-width nil)
 
@@ -488,8 +509,8 @@ startbuffer startcredit statusnote chargeset charge booking))
                                 ("UTC" "Universal")
                                 ("Asia/Manila" "Cebu")
                                 ("Asia/Kolkata" "Hyderabad")
-                                ("America/Chicago" "Austin")                               
-                                ("Europe/London" "Scotland")                               
+                                ("America/Chicago" "Austin")
+                                ("Europe/London" "Scotland")
                                 ("America/Phoenix" "Scottsdale")))
 
 (define-key evil-normal-state-map (kbd "C-x t") 'helm-world-time)
@@ -510,11 +531,15 @@ startbuffer startcredit statusnote chargeset charge booking))
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
   (setq web-mode-code-indent-offset 2))
-(add-hook 'web-mode-hook  'my-web-mode-hook) 
+(add-hook 'web-mode-hook  'my-web-mode-hook)
 (add-hook 'after-save-hook 'evil-ex-nohighlight)
 
 #+END_SRC
-
+** Yaml mode
+#+BEGIN_SRC emacs-lisp
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml" . yaml-mode))
+#+END_SRC
 ** Emacs backup files
 #+BEGIN_SRC emacs-lisp
 ;; do not create # files for not saving
@@ -532,7 +557,7 @@ startbuffer startcredit statusnote chargeset charge booking))
            " src=\"https://www.youtube.com/embed/%s\""
            " frameborder=\"0\""
            " allowfullscreen>%s</iframe>"))
- 
+
  (org-add-link-type
   "yt"
   (lambda (handle)
@@ -584,15 +609,15 @@ startbuffer startcredit statusnote chargeset charge booking))
 ;; breaks evil
 ;; (defun copy-from-osx ()
 ;; (shell-command-to-string "pbpaste"))
-;; 
+;;
 ;; (defun paste-to-osx (text &optional push)
 ;; (let ((process-connection-type nil))
 ;; (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
 ;; (process-send-string proc text)
 ;; (process-send-eof proc))))
-;; 
+;;
 ;; (setq interprogram-cut-function 'paste-to-osx)
-;; (setq interprogram-paste-function 'copy-from-osx) 
+;; (setq interprogram-paste-function 'copy-from-osx)
 #+END_SRC
 
 ** Company
