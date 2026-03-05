@@ -18,6 +18,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'tpope/vim-surround.git'
+Plugin 'tmsvg/pear-tree'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'davidhalter/jedi-vim.git'
 Plugin 'tmhedberg/SimpylFold'
@@ -54,6 +55,9 @@ Plugin 'ericqweinstein/ruumba'
 Plugin 'mattn/emmet-vim'
 Plugin 'epilande/vim-react-snippets'
 Plugin 'SirVer/ultisnips'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'ghifarit53/tokyonight-vim'
+Plugin 'sainnhe/everforest'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -65,26 +69,38 @@ syntax on
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Unfold code when on open
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" set foldmethod=syntax slows ALE so avoid it
-set foldmethod=indent
-augroup OpenAllFoldsOnFileOpen
-    autocmd!
-    autocmd BufRead * normal zR
-augroup END
+set nofoldenable
+" set foldmethod=syntax "slows ALE so avoid it
+" set foldmethod=indent
+" augroup OpenAllFoldsOnFileOpen
+"     autocmd!
+"     autocmd BufRead * normal zR
+" augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ALEes :help ale-lint-file-linters
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_fixers = { 'javascript': ['eslint'], 'python': ['black', 'isort', 'autopep8', 'prettier'], 'json': ['jsonlint']}
+let g:ale_fixers = {
+      \ 'typescript': ['eslint', 'prettier'],
+      \ 'typescriptreact': ['eslint', 'prettier'],
+      \ 'javascript': ['eslint'],
+      \ 'css': ['stylelint', 'prettier'],
+      \ 'python': ['black', 'isort', 'autopep8', 'prettier'],
+      \ 'json': ['prettier']}
 let g:ale_linters = {
 \   'javascript': ['eslint'],
-\   'json': ['jsonlint'],
+\   'typescript': ['eslint', 'tsserver', 'prettier'],
+\   'typescriptreact': ['eslint', 'tsserver', 'prettier'],
+\   'css': ['stylelint'],
+\   'json': ['prettier'],
 \   'python': ['pylint', 'autopep8', 'flake8', 'black'],
 \   'scala': ['scalac'],
 \   'eruby': ['ruumba', 'erb'],
 \   'ruby': ['ruby'],
 \   'java': ['javalsp']
 \}
+
+let g:typescript_indent_disable = 1
 let g:ale_javascript_prettier_options = '--single-quote'
 let g:ale_completion_enabled = 0
 let g:airline#extensions#ale#enabled = 1
@@ -104,7 +120,9 @@ let g:ale_cache_executable_check_failures = 1
 " control when to run lint
 " let g:ale_lint_on_text_changed = 'never'
 " let g:ale_lint_on_enter = 0
+let g:ale_fix_on_save = 1
 
+nnoremap <F3> :ALEFix<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AIRLINE FORMAT
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -138,12 +156,24 @@ set splitbelow
 set splitright
 
 set encoding=utf-8
-set wildignore=*.swp,*.bak,*.pyc,*.class,*.DS_Store,*.swo
+set wildignore=*.swp,*.bak,*.pyc,*.class,*.DS_Store,*.swo,*.~undo-tree~,*.undo-tree*
 let NERDTreeIgnore = ['\.pyc$', '\.swp$', '*\.DS_Store', '\.DS_Store$', '\.DS_Store', '\.swo$', '__pycache__']
+let NERDTreeRespectWildIgnore=1
 
-"set background=dark
-set background=light
-colorscheme PaperColor
+" enable when its not rendering as expected
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has('termguicolors')
+  set termguicolors " 24-bit terminal
+else
+  let g:synthwave_termcolors=256 " 256 color mode
+endif
+
+"set termguicolors
+
+set background=dark
+"set background=light
+
+"colorscheme PaperColor
 "colorscheme iceberg
 "colorscheme base16-default-dark
 "colorscheme stormpetrel
@@ -152,16 +182,8 @@ colorscheme PaperColor
 "colorscheme srcery-drk
 "colorscheme synthwave
 "colorscheme deep-space
-
-" enable when its not rendering as expected
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"if has('termguicolors')
-"  set termguicolors " 24-bit terminal
-"else
-"  let g:synthwave_termcolors=256 " 256 color mode
-"endif
-"
-"set termguicolors
+colorscheme tokyonight
+"colorscheme everforest
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -198,7 +220,7 @@ let NERDTreeDirArrows = 1
 let NERDTreeShowHidden=1
 
 " Open NERDTree always as certain width
-let g:NERDTreeWinSize = 50
+let g:NERDTreeWinSize = 45
 autocmd VimEnter * NERDTree
 autocmd VimEnter * set winfixwidth
 
@@ -211,84 +233,11 @@ let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exac
 let g:NERDTreeHighlightFoldersFullName = 1 " highlights the folder name
 
 
-"   Devicons
-"   Needs the following font:
-"   brew tap caskroom/fonts
-"   brew cask install font-hack-nerd-font
-"   ~default file icon
-if exists("g:loaded_webdevicons")
-	call webdevicons#refresh()
-endif
-set guifont=Hack\ Nerd\ Font:14
-let g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol = ''
-"   ~default folder icon
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
-"   ~custom file icons
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['js'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['json'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['scss'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['sql'] = ''
-
 " NERDTress File highlighting
 function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
  exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
  exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
 endfunction
-
-call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
-call NERDTreeHighlightFile('md', 'green', 'none', 'green', '#151515')
-call NERDTreeHighlightFile('txt', 'green', 'none', 'green', '#151515')
-call NERDTreeHighlightFile('csv', 'green', 'none', 'green', '#151515')
-call NERDTreeHighlightFile('gz', 'green', 'none', 'green', '#151515')
-
-call NERDTreeHighlightFile('jar', 'Red', 'none', '#ffa500', '#151515')
-
-call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
-call NERDTreeHighlightFile('in', 'yellow', 'none', 'yellow', '#151515')
-call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
-call NERDTreeHighlightFile('yaml', 'yellow', 'none', 'yellow', '#151515')
-call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
-call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
-call NERDTreeHighlightFile('xml', 'yellow', 'none', 'yellow', '#151515')
-call NERDTreeHighlightFile('iml', 'yellow', 'none', 'yellow', '#151515')
-
-call NERDTreeHighlightFile('json', 'cyan', 'none', 'cyan', '#151515')
-call NERDTreeHighlightFile('sql', 'cyan', 'none', 'cyan', '#151515')
-
-call NERDTreeHighlightFile('html', 'Magenta', 'none', '#ff00ff', '#151515')
-call NERDTreeHighlightFile('hbs', 'Magenta', 'none', '#ff00ff', '#151515')
-call NERDTreeHighlightFile('styl', 'Magenta', 'none', '#ff00ff', '#151515')
-call NERDTreeHighlightFile('css', 'Magenta', 'none', '#ff00ff', '#151515')
-call NERDTreeHighlightFile('sass', 'Magenta', 'none', '#ff00ff', '#151515')
-
-call NERDTreeHighlightFile('py', 'cyan', 'none', 'cyan', '#151515')
-call NERDTreeHighlightFile('js', 'cyan', 'none', 'cyan', '#151515')
-call NERDTreeHighlightFile('scala', 'cyan', 'none', 'cyan', '#151515')
-call NERDTreeHighlightFile('coffee', 'cyan', 'none', 'cyan', '#151515')
-call NERDTreeHighlightFile('php', 'cyan', 'none', 'cyan', '#151515')
-call NERDTreeHighlightFile('java', 'cyan', 'none', 'cyan', '#151515')
-
-call NERDTreeHighlightFile('json', 'blue', 'none', '#3366FF', '#151515')
-call NERDTreeHighlightFile('sql', 'blue', 'none', '#3366FF', '#151515')
-
-call NERDTreeHighlightFile('ds_store', 'Gray', 'none', '#686868', '#151515')
-call NERDTreeHighlightFile('gitconfig', 'Gray', 'none', '#686868', '#151515')
-call NERDTreeHighlightFile('gitignore', 'Gray', 'none', '#686868', '#151515')
-call NERDTreeHighlightFile('bashrc', 'Gray', 'none', '#686868', '#151515')
-call NERDTreeHighlightFile('bashprofile', 'Gray', 'none', '#686868', '#151515')
-call NERDTreeHighlightFile('swp', 'Gray', 'none', '#686868', '#151515')
-
-"call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
-"call NERDTreeHighlightFile('py', 'blue', 'none', '#3366FF', '#151515')
-"call NERDTreeHighlightFile('py', 'Magenta', 'none', '#ff00ff', '#151515')
-"call NERDTreeHighlightFile('scala', 'yellow', 'none', 'yellow', '#151515')
-"call NERDTreeHighlightFile('ds_store', 'Gray', 'none', '#686868', '#151515')
-"call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 set mouse=a
@@ -299,7 +248,7 @@ set runtimepath^=~/.vim/bundle/ctrlp.vim
 " CtrlP configurations
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.swo,*.swm,*.swn
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.swo,*.swm,*.swn,*.~undo-tree~,*#
 
 " let g:ycm_path_to_python_interpreter="/usr/local/bin/python3"
 let g:ycm_autoclose_preview_window_after_completion=1
@@ -316,7 +265,6 @@ set laststatus=2
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 " refresh color highlights
 autocmd BufEnter,InsertLeave * :syntax sync fromstart
-
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Searching texts within files
@@ -349,6 +297,41 @@ let g:UltiSnipsExpandTrigger="<C-l>"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Devicons
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   Needs the following font:
+"   brew tap caskroom/fonts
+"   brew cask install font-hack-nerd-font
+"   ~default file icon
+set guifont=Hack\ Nerd\ Font:14
+let g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol = ''
+"   ~default folder icon
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
+"   ~custom file icons
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['js'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['json'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['scss'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['sql'] = ''
+let g:DevIconsEnableFoldersOpenClose = 1
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+
+if exists("g:loaded_webdevicons")
+	call webdevicons#refresh()
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" enable autocomplete
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd FileType css,xml,html inoremap </ </<C-x><C-o>
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+let g:ycm_filepath_blacklist = {'*': 1}
+nnoremap ,S :g/{/+,/}/-sort<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Profiling
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -358,3 +341,20 @@ let g:UltiSnipsExpandTrigger="<C-l>"
 " " At this point do slow actions
 " :profile pause
 " :noautocmd qall!
+
+" Configure ALE to use the project's Python virtual environment if it exists
+function! ALEUseProjectVenv() abort
+    let l:venv_path = finddir('.venv', '.;')
+      if empty(l:venv_path)
+        let l:venv_path = finddir('venv', '.;')
+      endif
+    if !empty(l:venv_path)
+        let g:ale_python_flake8_executable = l:venv_path . '/bin/flake8'
+        let g:ale_python_pylint_executable = l:venv_path . '/bin/pylint'
+        let g:ale_python_executable = l:venv_path . '/bin/python'
+    endif
+endfunction
+
+" Call the function when opening a Python file
+autocmd FileType python call ALEUseProjectVenv()
+

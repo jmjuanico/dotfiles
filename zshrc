@@ -103,18 +103,18 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # NOTES TMUX SHORTCUTS
-# ta	tmux attach -t
-# tad	tmux attach -d -t
-# ts	tmux new-session -s
-# tl	tmux list-sessions
-# tksv	tmux kill-server
-# tkss	tmux kill-session -t
+# alias ta=tmux attach -t
+# alias tad=tmux attach -d -t
+# alias ts=tmux new-session -s
+# alias tl=tmux list-sessions
+# alias tksv=tmux kill-server
+# alias tkss=tmux kill-session -t
 
 # SETUP IN ITERM TO OPEN TMUX AT ALL TIMES
 # tmux ls && read ts && ta ${ts:-default} || ts ${ts:-default}
 
 # git cleanup branches
-exclude_branches="'master|staging|release|backup'"
+exclude_branches="'main|master|staging|release|backup'"
 alias clean="git branch -vv | cut -c 3- | awk '{print "$"1}' | grep -vE ${exclude_branches}"
 alias cleanremote="git branch -a -vv | cut -c 3- | awk '{print "$"1}' | grep -vE ${exclude_branches}"
 alias cleanforce="clean | xargs git branch -D"
@@ -131,5 +131,15 @@ export PATH="/opt/local/bin:$PATH"
 export NVM_DIR="$HOME/.nvm"
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+  [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"  # This loads nvm
 export PATH="/usr/local/opt/freetds@0.91/bin:$PATH"
 
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Add pyenv to PATH
+export PATH="$HOME/.pyenv/bin:$PATH"
+
+# Initialize pyenv
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
