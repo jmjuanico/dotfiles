@@ -32,7 +32,6 @@ Plugin 'nvie/vim-flake8'
 Plugin 'powerline/powerline'
 Plugin 'ctrlp.vim'
 Plugin 'ntpeters/vim-better-whitespace'
-Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'nightsense/vim-crunchbang'
 Plugin 'exitface/synthwave.vim'
 Plugin 'derekwyatt/vim-scala'
@@ -58,6 +57,7 @@ Plugin 'SirVer/ultisnips'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'ghifarit53/tokyonight-vim'
 Plugin 'sainnhe/everforest'
+Plugin 'nathanaelkane/vim-indent-guides'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -65,6 +65,10 @@ filetype plugin indent on    " required
 
 let python_highlight_all=1
 syntax on
+" Fix syntax highlighting glitches
+syntax enable
+syntax sync minlines=256
+syntax sync maxlines=500
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Unfold code when on open
@@ -255,7 +259,9 @@ let g:ycm_autoclose_preview_window_after_completion=1
 let g:ycm_python_binary_path=substitute(system("which python"), "\n$", "", "")
 let $PYTHONPATH=getcwd() . ":" . $PYTHONPATH
 
-map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap gb <C-o>
+
 set ts=2 sw=2 et
 let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
