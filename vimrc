@@ -20,9 +20,6 @@ Plugin 'ryanoasis/vim-devicons'
 Plugin 'tpope/vim-surround.git'
 Plugin 'tmsvg/pear-tree'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'davidhalter/jedi-vim.git'
-Plugin 'tmhedberg/SimpylFold'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'kamwitsta/nordisk'
 Plugin 'tyrannicaltoucan/vim-deep-space'
 Plugin 'saalaa/ancient-colors.vim'
@@ -38,15 +35,9 @@ Plugin 'derekwyatt/vim-scala'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'pangloss/vim-javascript'
 Plugin 'maxmellon/vim-jsx-pretty'
-Plugin 'sbdchd/neoformat'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'dense-analysis/ale'
 Plugin 'tpope/vim-fugitive'
-Plugin 'prettier/vim-prettier'
-Plugin 'hhatto/autopep8'
-Plugin 'google/yapf'
-Plugin 'ambv/black'
 Plugin 'mileszs/ack.vim'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'vim-ruby/vim-ruby'
@@ -58,12 +49,12 @@ Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'ghifarit53/tokyonight-vim'
 Plugin 'sainnhe/everforest'
 Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'neoclide/coc.nvim', {'branch': 'release'}
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
 
-let python_highlight_all=1
 syntax on
 " Fix syntax highlighting glitches
 syntax enable
@@ -74,59 +65,7 @@ syntax sync maxlines=500
 " Unfold code when on open
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nofoldenable
-" set foldmethod=syntax "slows ALE so avoid it
-" set foldmethod=indent
-" augroup OpenAllFoldsOnFileOpen
-"     autocmd!
-"     autocmd BufRead * normal zR
-" augroup END
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" ALEes :help ale-lint-file-linters
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_fixers = {
-      \ 'typescript': ['eslint', 'prettier'],
-      \ 'typescriptreact': ['eslint', 'prettier'],
-      \ 'javascript': ['eslint'],
-      \ 'css': ['stylelint', 'prettier'],
-      \ 'python': ['black', 'isort', 'autopep8', 'prettier'],
-      \ 'json': ['prettier']}
-let g:ale_linters = {
-\   'javascript': ['eslint'],
-\   'typescript': ['eslint', 'tsserver', 'prettier'],
-\   'typescriptreact': ['eslint', 'tsserver', 'prettier'],
-\   'css': ['stylelint'],
-\   'json': ['prettier'],
-\   'python': ['pylint', 'autopep8', 'flake8', 'black'],
-\   'scala': ['scalac'],
-\   'eruby': ['ruumba', 'erb'],
-\   'ruby': ['ruby'],
-\   'java': ['javalsp']
-\}
-
-let g:typescript_indent_disable = 1
-let g:ale_javascript_prettier_options = '--single-quote'
-let g:ale_completion_enabled = 0
-let g:airline#extensions#ale#enabled = 1
-
-" signs on gutter
-let g:ale_sign_column_always = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
-let g:ale_open_list = 1
-
-" Only run linters named in ale_linters settings.
-let g:ale_linters_explicit = 1
-
-" something to do with performance cacheing
-let g:ale_cache_executable_check_failures = 1
-
-" control when to run lint
-" let g:ale_lint_on_text_changed = 'never'
-" let g:ale_lint_on_enter = 0
-let g:ale_fix_on_save = 1
-
-nnoremap <F3> :ALEFix<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AIRLINE FORMAT
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -190,27 +129,6 @@ colorscheme tokyonight
 "colorscheme everforest
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"vertical line for cursor good for dark only
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"set cursorcolumn
-"hi CursorColumn ctermbg=8
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" NEOFORMAT CODE formatter
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" " defaults when no file type specified
-" " Enable alignment
-let g:neoformat_basic_format_align = 1
-let g:neoformat_basic_format_retab = 1
-let g:neoformat_basic_format_trim = 1
-let g:neoformat_run_all_formatters = 1
-let g:neoformat_try_formatprg = 1
-"
-" " javascript formatter: https://github.com/prettier/prettier
-" " python formatter: https://github.com/google/yapf
-" " scala formatter: https://github.com/scala-ide/scalariform
-
 let g:javascript_plugin_flow = 1
 let g:javascript_plugin_ngdoc = 1
 let g:jsx_ext_required = 0
@@ -247,20 +165,11 @@ endfunction
 set mouse=a
 set backspace=indent,eol,start
 set clipboard=unnamed
-set runtimepath^=~/.vim/bundle/ctrlp.vim
 
 " CtrlP configurations
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.swo,*.swm,*.swn,*.~undo-tree~,*#
-
-" let g:ycm_path_to_python_interpreter="/usr/local/bin/python3"
-let g:ycm_autoclose_preview_window_after_completion=1
-let g:ycm_python_binary_path=substitute(system("which python"), "\n$", "", "")
-let $PYTHONPATH=getcwd() . ":" . $PYTHONPATH
-
-nnoremap gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap gb <C-o>
 
 set ts=2 sw=2 et
 let g:indent_guides_start_level = 2
@@ -295,7 +204,19 @@ command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap \ :Ag<SPACE>
 
 " search word under cursor
-nnoremap <C-f> :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+" nnoremap <C-f> :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+" search word prompt
+nnoremap <C-f> :call <SID>AgSearch(expand('<cword>'))<CR>
+function! s:AgSearch(default)
+  let l:query = input('Ag search: ', a:default)
+  if empty(l:query)
+    return
+  endif
+
+  execute 'silent grep! ' . shellescape(l:query)
+  copen
+  redraw!
+endfunction
 
 " shortcut to run emmet ,, (comma comma)
 let g:user_emmet_leader_key=','
@@ -338,29 +259,32 @@ autocmd FileType css,xml,html inoremap </ </<C-x><C-o>
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 let g:ycm_filepath_blacklist = {'*': 1}
 nnoremap ,S :g/{/+,/}/-sort<CR>
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Profiling
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" :profile start profile.log
-" :profile func *
-" :profile file *
-" " At this point do slow actions
-" :profile pause
-" :noautocmd qall!
 
-" Configure ALE to use the project's Python virtual environment if it exists
-function! ALEUseProjectVenv() abort
-    let l:venv_path = finddir('.venv', '.;')
-      if empty(l:venv_path)
-        let l:venv_path = finddir('venv', '.;')
-      endif
-    if !empty(l:venv_path)
-        let g:ale_python_flake8_executable = l:venv_path . '/bin/flake8'
-        let g:ale_python_pylint_executable = l:venv_path . '/bin/pylint'
-        let g:ale_python_executable = l:venv_path . '/bin/python'
-    endif
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" COC CONFIG
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set updatetime=300
+set signcolumn=yes
+set shortmess+=c
+nnoremap <silent> gd :call CocActionAsync('jumpDefinition')<CR>
+nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+nnoremap <silent> gb <C-o>
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+function! s:coc_format()
+  if CocAction('ensureDocument')
+    call CocAction('format')
+  endif
+endfunction
+function! s:format()
+  if &filetype ==# 'typescript' || &filetype ==# 'typescriptreact' || &filetype ==# 'javascript' || &filetype ==# 'javascriptreact'
+    call CocAction('runCommand', 'prettier.formatFile')
+  elseif &filetype ==# 'python'
+    call CocAction('format')
+  endif
 endfunction
 
-" Call the function when opening a Python file
-autocmd FileType python call ALEUseProjectVenv()
-
+autocmd BufWritePre * silent! call s:format()
