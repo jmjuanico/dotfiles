@@ -7,15 +7,16 @@
 ########## Variables
 
 dir=~/dotfiles
+
 filestosave="
-bashrc
-vimrc
-zshrc
-gitignore
-gitconfig
-emacs.d/init.el
-emacs.d/boot.org
-vim/coc-settings.json
+.bashrc
+.vimrc
+.zshrc
+.gitignore
+.gitconfig
+.emacs.d/init.el
+.emacs.d/boot.org
+.vim/coc-settings.json
 .git-templates/hooks
 "
 
@@ -27,7 +28,7 @@ mkdir -p "$dir"
 echo "Backing up dotfiles..."
 
 for file in $filestosave; do
-    src="$HOME/.$file"
+    src="$HOME/$file"
     dest="$dir/$file"
 
     if [ -e "$src" ]; then

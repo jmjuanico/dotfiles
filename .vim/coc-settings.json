@@ -1,0 +1,23 @@
+{
+  "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.cargo.autoreload": true,
+  "python.venvPath": ".",
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.typeCheckingMode": "basic",
+  "diagnostic.virtualText": true,
+  "eslint.format.enable": false,
+  "prettier.enable": true,
+  "prettier.requireConfig": false,
+  "python.formatting.provider": "black",
+  "eslint.enable": true,
+  "eslint.packageManager": "npm",
+  "eslint.filetypes": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
