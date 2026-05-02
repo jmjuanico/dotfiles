@@ -4,30 +4,38 @@
 # Saves dotfiles backup to git
 ############################
 
-########## Variables
-
 dir=~/dotfiles
 githooks=~/.git-templates/hooks
+
 filestosave="bashrc vimrc zshrc gitignore gitconfig emacs.d/init.el emacs.d/boot.org vim/coc-settings.json"
 
-##########
+echo "Creating $dir"
+mkdir -p "$dir"
 
-# create dotffiles dir
-echo "Creating $dir for backup of any existing dotfiles in ~"
-if [ ! -d "$dir" ]; then
-  mkdir -p $dir
-fi
+echo "Backing up dotfiles..."
 
-echo "Go to $dir and save dotfiles"
-# save and push to git
 for file in $filestosave; do
-    cp ~/.$file $dir/$file
+    src="$HOME/.$file"
+    dest="$dir/$file"
+
+    if [ -f "$src" ]; then
+        mkdir -p "$(dirname "$dest")"
+        cp "$src" "$dest"
+        echo "Saved $file"
+    else
+        echo "Skipping missing: $file"
+    fi
 done
 
-echo "Saving git hooks"
-cp -a $githooks $dir/git-hooks
+echo "Saving git hooks..."
+cp -r "$githooks" "$dir/git-hooks"
 
-cd $dir
+cd "$dir" || exit
+
 git add .
-git commit . -m "auto saving updates"
-git push origin master
+
+git diff --cached --quiet && echo "No changes to commit" && exit 0
+
+git commit -m "auto saving updates"
+
+git push origin HEAD
