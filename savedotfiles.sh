@@ -17,7 +17,7 @@ filestosave="
 .emacs.d/init.el
 .emacs.d/boot.org
 .vim/coc-settings.json
-.git-templates/hooks
+.git-templates/prepare-commit-msg
 "
 
 ##########
