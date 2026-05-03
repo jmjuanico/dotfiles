@@ -342,20 +342,6 @@ endfunction
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" augroup coc_format
-"   autocmd!
-" 
-"   autocmd FileType javascript,javascriptreact,typescript,typescriptreact,json
-"         \ let b:format_cmd = "CocAction('runCommand', 'prettier.formatFile')"
-" 
-"   autocmd FileType python
-"         \ let b:format_cmd = "CocAction('format')"
-" 
-"   autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.json,*.py
-"         \ if exists('b:format_cmd') | execute 'silent! call ' . b:format_cmd | endif
-" 
-" augroup END
-
 augroup coc_format
   autocmd!
   autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.json
