@@ -60,6 +60,7 @@ syntax on
 syntax enable
 syntax sync minlines=256
 syntax sync maxlines=500
+let mapleader = " "
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Unfold code when on open
@@ -263,28 +264,110 @@ nnoremap ,S :g/{/+,/}/-sort<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COC CONFIG
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set updatetime=300
-set signcolumn=yes
 set shortmess+=c
-nnoremap <silent> gd :call CocActionAsync('jumpDefinition')<CR>
-nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+" utf-8 byte sequence
+set encoding=utf-8
+" Some servers have issues with backup files, see #649
+set nobackup
+set nowritebackup
+
+" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+" delays and poor user experience
+set updatetime=300
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved
+set signcolumn=yes
+" Add `:Format` command to format current buffer
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
+nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation
+nmap <silent><nowait> gd <Plug>(coc-definition)
+nmap <silent><nowait> gy <Plug>(coc-type-definition)
+nmap <silent><nowait> gi <Plug>(coc-implementation)
+nmap <silent><nowait> gr <Plug>(coc-references)
 nnoremap <silent> gb <C-o>
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-function! s:coc_format()
-  if CocAction('ensureDocument')
-    call CocAction('format')
-  endif
-endfunction
-function! s:format()
-  if &filetype ==# 'typescript' || &filetype ==# 'typescriptreact' || &filetype ==# 'javascript' || &filetype ==# 'javascriptreact'
-    call CocAction('runCommand', 'prettier.formatFile')
-  elseif &filetype ==# 'python'
-    call CocAction('format')
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
   endif
 endfunction
 
-autocmd BufWritePre * silent! call s:format()
+" Highlight the symbol and its references when holding the cursor
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" augroup coc_format
+"   autocmd!
+" 
+"   autocmd FileType javascript,javascriptreact,typescript,typescriptreact,json
+"         \ let b:format_cmd = "CocAction('runCommand', 'prettier.formatFile')"
+" 
+"   autocmd FileType python
+"         \ let b:format_cmd = "CocAction('format')"
+" 
+"   autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.json,*.py
+"         \ if exists('b:format_cmd') | execute 'silent! call ' . b:format_cmd | endif
+" 
+" augroup END
+
+augroup coc_format
+  autocmd!
+  autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.json
+        \ silent! call CocActionAsync('runCommand', 'prettier.formatFile')
+  autocmd BufWritePre *.py
+        \ silent! call CocActionAsync('format') |
+        \ silent! CocCommand editor.action.organizeImport
+augroup END
+
+nnoremap <leader>h :CocCommand document.toggleInlayHint<CR>
+nnoremap <leader>d :CocDiagnostics<CR>
+
+
+
+
