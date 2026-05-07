@@ -1,4 +1,6 @@
 set nocompatible              " required
+let g:pear_tree_map_special_keys = 0
+let g:pear_tree_map_cr = 0
 filetype off                  " required
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -53,6 +55,8 @@ Plugin 'neoclide/coc.nvim', {'branch': 'release'}
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
+let g:pear_tree_map_cr = 0 "conflicts with coc enter
+
 filetype plugin indent on    " required
 
 syntax on
@@ -297,11 +301,7 @@ inoremap <silent><expr> <TAB>
       \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 function! CheckBackspace() abort
   let col = col('.') - 1
@@ -342,18 +342,42 @@ endfunction
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
+let g:format_exclude_paths = [
+      \ 'alembic/versions/',
+      \ 'migrations/',
+      \ 'generated/',
+      \ '__generated__/',
+      \ 'node_modules/',
+      \ 'venv/',
+      \ '.venv/',
+      \ '__pycache__/',
+      \ 'dist/',
+      \ 'build/',
+      \ 'postgresql/',
+      \ ]
+
+function! s:is_excluded_file() abort
+  let l:path = expand('%:p')
+
+  for pattern in g:format_exclude_paths
+    if l:path =~# pattern
+      return v:true
+    endif
+  endfor
+
+  return v:false
+endfunction
+
 augroup coc_format
   autocmd!
-  autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.json
+  autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.json if !s:is_excluded_file() |
         \ silent! call CocActionAsync('runCommand', 'prettier.formatFile')
-  autocmd BufWritePre *.py
+
+  autocmd BufWritePre *.py if !s:is_excluded_file() |
         \ silent! call CocActionAsync('format') |
-        \ silent! CocCommand editor.action.organizeImport
+        \ silent! CocCommand editor.action.organizeImport |
+        \ endif
 augroup END
 
 nnoremap <leader>h :CocCommand document.toggleInlayHint<CR>
 nnoremap <leader>d :CocDiagnostics<CR>
-
-
-
-
